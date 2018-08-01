@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright (c) 2018 IBM Corporation and others.
  All rights reserved. This program and the accompanying materials
@@ -36,6 +37,12 @@
         <artifactId>mojo-executor</artifactId>
         <version>2.3.0</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -61,6 +68,44 @@
                   </goals>
               </execution>
           </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+        <configuration>
+          <excludes>
+              <!-- Simple boilerplate SpringBoot tests not appropriate for copyrighting -->
+            <exclude>src/it/**/*.java</exclude>
+            <exclude>.git</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>README.md</exclude>
+            <!-- Will match the pattern below, not the header, so pointless -->
+        </excludes>
+        <licenses>
+            <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+              <licenseFamilyCategory>EPL1</licenseFamilyCategory>
+              <licenseFamilyName>Eclipse Public License 1.0</licenseFamilyName>
+              <notes></notes>
+              <patterns>
+                  <pattern>are made available under the terms of the Eclipse Public License v1.0</pattern>
+              </patterns>
+            </license>
+          </licenses>
+          <licenseFamilies>
+            <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+              <familyName>Eclipse Public License 1.0</familyName>
+            </licenseFamily>
+          </licenseFamilies>
+    </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
