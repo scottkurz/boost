@@ -67,6 +67,13 @@
           <groupId>net.wasdev.wlp.maven.plugins</groupId>
           <artifactId>liberty-maven-plugin</artifactId>
         </dependency>
+        
+        <dependency>
+        	<groupId>boost.project</groupId>
+			<artifactId>boost-maven-plugin</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			
+		</dependency>
 
 	</dependencies>
 
