@@ -14,23 +14,40 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import java.io.*;
+import java.util.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import boost.liberty.config.ServerConfiguration;
+import boost.liberty.config.ServerConfigurationFactory;
+
 import org.junit.Test;
 import org.codehaus.plexus.util.FileUtils;
 
 public class FeatureVersionIT {
 	
-	private static String SOURCE_FEATURE_LIST_XML = "src/test/resources/featureList.xml";
-	private static String TARGET_FEATURE_LIST_XML = "target/liberty/wlp/usr/servers/BoostServer/configDropins/overrides/featureList.xml";
-    
+	private static String GENERATED_CONFIG_LOCATION;
+
+	@BeforeClass
+	public static void init() {
+		GENERATED_CONFIG_LOCATION = "./target/liberty/wlp/usr/servers/BoostServer/configDropins/overrides/featureList.xml";
+	}
+	
     @Test
-    public void testFeatureVersion() throws Exception {
-    	File targetFile = new File(TARGET_FEATURE_LIST_XML);
-    	assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
-    	
-    	// Check contents of file for springBoot-15 feature
-    	File sourceFile = new File(SOURCE_FEATURE_LIST_XML);
-    	
-    	assertEquals("verify target server featureList.xml", FileUtils.fileRead(sourceFile),
-                FileUtils.fileRead(targetFile));
+    public void testConfig() throws Exception {
+
+            InputStream is = new FileInputStream(GENERATED_CONFIG_LOCATION);
+            try {
+                    ServerConfigurationFactory configFactory = ServerConfigurationFactory.getInstance();
+                    ServerConfiguration serverConfig = configFactory.unmarshal(is);
+                    Set<String> features = serverConfig.getFeatureManager().getFeatures();
+                    Set<String> expected = new HashSet<String>();
+                    expected.add("springBoot-2.0");
+                    assertEquals("Unexpected feature set", expected, features);
+            } finally {
+                    is.close();
+            }
     }
+
 }
