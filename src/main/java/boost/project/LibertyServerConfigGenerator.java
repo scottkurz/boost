@@ -20,7 +20,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -28,8 +27,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -37,18 +34,23 @@ import org.w3c.dom.NodeList;
  *
  */
 public class LibertyServerConfigGenerator {
+	
+	public static String FEATURE = "feature";
+	public static String FEATURE_MANAGER = "featureManager";
 
 	Document doc;
 	Element featureManager;
 	Element httpEndpoint;
 	
-	Set<String> featuresAdded;
-
+	Set<String> featuresAdded = new HashSet<String>();
 	
 	public LibertyServerConfigGenerator() throws ParserConfigurationException {
+		generateDocument();
+	}
 	
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	private void generateDocument() throws ParserConfigurationException  {
+	
+		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
 		// Create top level server config element
 		doc = docBuilder.newDocument();
@@ -57,7 +59,7 @@ public class LibertyServerConfigGenerator {
 		doc.appendChild(serverRoot);
 		
 		// Create featureManager config element
-		featureManager = doc.createElement("featureManager");
+		featureManager = doc.createElement(FEATURE_MANAGER);
 		serverRoot.appendChild(featureManager);
 		
 		// Create httpEndpoint config element with default values
@@ -66,9 +68,6 @@ public class LibertyServerConfigGenerator {
 		httpEndpoint.setAttribute("httpPort", "9080");
 		httpEndpoint.setAttribute("httpsPort", "9443");
 		serverRoot.appendChild(httpEndpoint);
-		
-		featuresAdded = new HashSet<String>();
-			
 	}
 	
 	/**
@@ -99,7 +98,7 @@ public class LibertyServerConfigGenerator {
 	public void addFeature(String featureName) {
 		
 		if (!featuresAdded.contains(featureName)) {
-			Element feature = doc.createElement("feature");
+			Element feature = doc.createElement(FEATURE);
 			feature.appendChild(doc.createTextNode(featureName));
 			featureManager.appendChild(feature);
 			featuresAdded.add(featureName);
