@@ -34,6 +34,16 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.websphere.appserver.api</groupId>
+                <artifactId>com.ibm.websphere.appserver.api.json</artifactId>
+                <version>1.0.21</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.9</version>
@@ -43,27 +53,23 @@
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
             </dependency>
-            <dependency>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>2.5</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
 	<dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.websphere.appserver.api</groupId>
+            <artifactId>com.ibm.websphere.appserver.api.json</artifactId>
+        </dependency>
 		<dependency>
         	<groupId>boost.project</groupId>
             <artifactId>liberty-booster-jaxrs</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-            <dependency>
-            <groupId>com.ibm.tools.target</groupId>
-            <artifactId>was-liberty</artifactId>
-            <version>8.5.x.1</version>
-            <type>pom</type>
-            <scope>provided</scope>
-		</dependency>      
         <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
@@ -73,32 +79,11 @@
           <artifactId>commons-httpclient</artifactId>
         </dependency>
 
-        <dependency>
-          <groupId>net.wasdev.wlp.maven.plugins</groupId>
-          <artifactId>liberty-maven-plugin</artifactId>
-        </dependency>
-
 	</dependencies>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
-
-    <repositories>
-
-        <repository>
-            <id>WASdev</id>
-            <name>WASdev Repository</name>
-            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/repository/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
 	<build>
 		<pluginManagement>
