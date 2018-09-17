@@ -21,7 +21,6 @@
         <module>test20Implicit</module>
         <module>testWebsocket</module>
         <module>test-docker</module>
-        <module>test-run-server</module>
     </modules>
     
 </project>

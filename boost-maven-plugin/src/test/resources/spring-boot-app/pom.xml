@@ -4,7 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.openliberty.boost</groupId>
-	<artifactId>test-run-server</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<pluginRepositories>
@@ -110,4 +109,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	<artifactId>spring-boot-app</artifactId>
 </project>

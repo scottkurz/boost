@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package it;
+package io.openliberty.boost.liberty;
 
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -17,56 +17,27 @@ import org.junit.Test;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-public class EndpointIT {
+public class LibertyRunMojoTest extends AbstractMojoTestCase {
     private static String URL;
     
-    private static Process process;
-    
-    @BeforeClass 
-    public static void init() throws Exception {
-        URL = "http://localhost:8080/";
-        
-        process = Runtime.getRuntime().exec("mvn boost:run");
-        
-        File file = new File("target/liberty/wlp/usr/servers/BoostServer/logs/messages.log");
-        
-        int timeout = 0;
-        boolean serverStarted = false;
-        
-        while(timeout < 10 && !serverStarted) {
-            
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                
-                // Check for startup message
-                if (line.contains("CWWKF0011I")) {
-                    serverStarted = true;
-                    break;
-                }
-            }
-            
-            fileReader.close();
-            
-            if (!serverStarted) {
-                
-                Thread.sleep(1000);
-                timeout++;
-            }
-            
-        }
+    /** {@inheritDoc} */
+    protected void setUp()
+        throws Exception
+    {
+        super.setUp();
     }
-    
-    @AfterClass
-    public static void teardown() {
-        process.destroy();
+
+    /** {@inheritDoc} */
+    protected void tearDown()
+        throws Exception
+    {
+        super.tearDown();
     }
     
     @Test
@@ -74,7 +45,15 @@ public class EndpointIT {
         HttpClient client = new HttpClient();
         
         GetMethod method = new GetMethod(URL);
-        
+       
+        File pom = getTestFile( "src/test/resources/spring-boot-app/pom.xml" );
+        assertNotNull( pom );
+        assertTrue( pom.exists() );
+
+        LibertyRunMojo libertyRunMojo = (LibertyRunMojo) lookupMojo( "run", pom );
+        assertNotNull( libertyRunMojo );
+        libertyRunMojo.execute();
+
         try {
             int statusCode = client.executeMethod(method);
             
