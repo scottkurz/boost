@@ -19,34 +19,35 @@ import java.io.FileReader;
 import org.junit.Test;
 
 public class FeatureVersionIT {
-
-    private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>";
-    private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
-
+	
+	private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>";
+	private static final String JAXRS_21_FEATURE = "<feature>jaxrs-2.1</feature>";
+	private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
+    
     @Test
     public void testFeatureVersion() throws Exception {
-        File targetFile = new File(SERVER_XML);
-        assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
-
-        // Check contents of file for jaxrs feature
-        boolean found = false;
-        BufferedReader br = null;
-
-        try {
-            br = new BufferedReader(new FileReader(SERVER_XML));
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.contains(JAXRS_20_FEATURE)) {
-                    found = true;
-                    break;
-                }
-            }
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
-
-        assertTrue("The " + JAXRS_20_FEATURE + " feature was not found in the server configuration", found);
+    	File targetFile = new File(SERVER_XML);
+    	assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
+    	
+    	// Check contents of file for jaxrs feature
+    	boolean found = false;
+    	BufferedReader br = null;
+    	
+    	try {
+        	br = new BufferedReader(new FileReader(SERVER_XML));
+        	String line;
+        	while ((line = br.readLine()) != null) {
+        	    if (line.contains(JAXRS_20_FEATURE) || line.contains(JAXRS_21_FEATURE)) {
+        	    	found = true;
+        	    	break;
+        	    }
+        	}
+    	} finally {
+    		if (br != null) {
+    			br.close();
+    		}
+    	}
+    	
+    	assertTrue("The "+JAXRS_20_FEATURE+" or the " + JAXRS_21_FEATURE+ " feature was not found in the server configuration", found);    
     }
 }

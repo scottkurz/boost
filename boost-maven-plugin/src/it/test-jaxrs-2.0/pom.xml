@@ -33,7 +33,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>io.openliberty.boost</groupId>
-				<artifactId>boost-bom</artifactId>
+				<artifactId>boost-javaee7-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
 				<type>pom</type>
@@ -43,9 +43,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.openliberty.features</groupId>
-			<artifactId>jaxrs-2.0</artifactId>
-			<type>esa</type>
+			<groupId>io.openliberty.boost</groupId>
+			<artifactId>boost-jaxrs</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

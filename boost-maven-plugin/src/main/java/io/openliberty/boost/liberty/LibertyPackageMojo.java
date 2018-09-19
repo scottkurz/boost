@@ -26,6 +26,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.plugins.annotations.*;
 
@@ -250,13 +252,31 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
     private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
 
+    	//first get the bom level
+    	String buildLevel = null;
+    	
+    	getLog().debug("AJM: getting the boost BOM\n");
+		DependencyManagement depMgmt = proj.getOriginalModel().getDependencyManagement();
+		for (Dependency depmgtdep : depMgmt.getDependencies()) {
+			getLog().debug("BoostExt: found this artifact in dependencyMgmt section-> " + depmgtdep.getArtifactId()
+					+ ":" + depmgtdep.getVersion() + "\n");
+			if (depmgtdep.getArtifactId().equals("boost-javaee7-bom")) {
+				buildLevel = "ee7";
+			} else if (depmgtdep.getArtifactId().equals("boost-javaee8-bom")) {
+				buildLevel = "ee8";
+			} else {
+				getLog().debug("AJM: unknown build bom");
+			}
+
+		}
+		
         List<String> listOfDependencies = new ArrayList<String>();
         getLog().debug("getBoostCfg: first lets see what dependencies we find");
 
         for (Artifact artifact : project.getArtifacts()) {
             getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getGroupId() + ":"
                     + artifact.getArtifactId());
-            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId());
+            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + buildLevel);
         }
 
         return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
