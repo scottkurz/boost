@@ -9,7 +9,7 @@
     <parent>
         <groupId>io.openliberty.boost</groupId>
         <artifactId>boost-maven-parent</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>boost-maven-plugin</artifactId>
@@ -21,15 +21,22 @@
 
         <dependency>
             <groupId>io.openliberty.boost</groupId>
-            <artifactId>boost-bom</artifactId>
-            <version>0.1.2-SNAPSHOT</version>
+            <artifactId>boost-javaee7-bom</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+            <groupId>io.openliberty.boost</groupId>
+            <artifactId>boost-javaee8-bom</artifactId>
+            <version>0.1-SNAPSHOT</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.openliberty.boost</groupId>
             <artifactId>boost-common</artifactId>
-            <version>0.1.1</version>
+            <version>0.1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.wasdev.wlp.maven.plugins</groupId>
@@ -90,6 +97,20 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+		<!-- for the extension -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+		<!-- dependency for plexus annotation -->
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-component-annotations</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<!-- end for the extendsion -->
     </dependencies>
 
     <profiles>
@@ -143,6 +164,20 @@
             </resource>
         </resources>
         <plugins>
+			<!-- for the extension -->
+			<plugin>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-component-metadata</artifactId>
+				<version>1.7.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- end for the extension -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
