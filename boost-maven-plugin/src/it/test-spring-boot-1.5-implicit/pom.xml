@@ -106,10 +106,19 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Configuration originally just intended to test the use of any explicit configuration in pom.xml.  At the time of this writing, nothing special intended about OL 18002 selection. -->
 			<plugin>
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
+				<configuration>
+					<runtimeArtifact>
+						<groupId>io.openliberty</groupId>
+						<artifactId>openliberty-runtime</artifactId>
+						<version>18.0.0.2</version>
+						<type>zip</type>
+					</runtimeArtifact>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
