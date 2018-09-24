@@ -9,9 +9,10 @@ jdk:
 services:
     - docker
 before_install:
-     - echo 'Installing boost-common lib ....'
-     - git clone https://github.com/OpenLiberty/boost-common.git ./boost-common
+     - echo 'Installing boost-common lib from my fork ....'
+     - git clone https://github.com/scottkurz/boost-common.git ./boost-common
      - cd ./boost-common
+     - git checkout read-server.address-prop 
      - mvn clean install
      - cd ..
      - docker run -d -p 5000:5000 --restart=always --name registry registry:2
