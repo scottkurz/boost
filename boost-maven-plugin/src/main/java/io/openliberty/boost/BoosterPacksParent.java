@@ -15,8 +15,8 @@ public class BoosterPacksParent {
 	
 	JDBCBoosterPackConfigurator jdbcConfig = null;
 	private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
-	private String JAXRS_BOOSTER_PACK_STRING_EE7 = "io.openliberty.boost:boost-jaxrs:ee7";
-	private String JAXRS_BOOSTER_PACK_STRING_EE8 = "io.openliberty.boost:boost-jaxrs:ee8";
+	private String JAXRS_BOOSTER_PACK_STRING_EE7 = "jaxrs:ee7";
+	private String JAXRS_BOOSTER_PACK_STRING_EE8 = "jaxrs:ee8";
 	private List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
 	/**
@@ -30,14 +30,17 @@ public class BoosterPacksParent {
 					
 		featureList = new ArrayList<String>();
 		for(String dep: dependencies) {
+			System.out.println("AJM - string dependency resolved -> " + dep);;
 			if (dep.equals(JDBC_BOOSTER_PACK_STRING)){			
 				boosterPackConfigList.add(new JDBCBoosterPackConfigurator());
 			} else if (dep.equals(JAXRS_BOOSTER_PACK_STRING_EE7) || dep.equals(JAXRS_BOOSTER_PACK_STRING_EE8)){	
 				JAXRSBoosterPackConfigurator jaxrsCfg = new JAXRSBoosterPackConfigurator();
 				if (dep.equals(JAXRS_BOOSTER_PACK_STRING_EE7)){
+					System.out.println("AJM - v7 string dependency resolved -> " + dep);
 					jaxrsCfg.setFeatureString("jaxrs-2.0");
 				}
 				else {
+					System.out.println("AJM - v8 string dependency resolved -> " + dep);
 					jaxrsCfg.setFeatureString("jaxrs-2.1");
 				}
 				boosterPackConfigList.add(jaxrsCfg);

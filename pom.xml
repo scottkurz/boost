@@ -8,7 +8,7 @@
 
     <groupId>io.openliberty.boost</groupId>
     <artifactId>boost-maven-parent</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>boost-maven-plugin Parent</name>
@@ -36,9 +36,6 @@
     </scm>
 
     <modules>
-		<module>boost-jaxrs</module>
-        <module>boost-javaee7-bom</module>
-        <module>boost-javaee8-bom</module>
         <module>boost-maven-plugin</module>
     </modules>
 

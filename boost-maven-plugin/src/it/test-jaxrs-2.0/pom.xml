@@ -29,22 +29,11 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.openliberty.boost</groupId>
-				<artifactId>boost-javaee7-bom</artifactId>
-				<version>@pom.version@</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
-			<artifactId>boost-jaxrs</artifactId>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -67,6 +56,11 @@
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
+				<configuration>
+					<booster>jaxrs</booster>
+					<booster>jdbc</booster>
+				</configuration>
+				<extensions>true</extensions>	
 				<executions>
 					<execution>
 						<goals>

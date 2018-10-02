@@ -28,7 +28,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.BoostException;
@@ -118,7 +120,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             } else { // Dealing with an EE based app
                 attach = false;
                 installApp("project");
-                boosterFeatures = getBoosterConfigsFromDependencies(project);
+                boosterFeatures = getBoosterConfigs(project);
                 generateServerXMLJ2EE(boosterFeatures);
                 installMissingFeatures();
                 createUberJar(null, attach);
@@ -250,37 +252,42 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
     }
 
-    private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
+	private List<BoosterPackConfigurator> getBoosterConfigs(MavenProject proj) {
 
-    	//first get the bom level
-    	String buildLevel = null;
-    	
-    	getLog().debug("AJM: getting the boost BOM\n");
-		DependencyManagement depMgmt = proj.getOriginalModel().getDependencyManagement();
-		for (Dependency depmgtdep : depMgmt.getDependencies()) {
-			getLog().debug("BoostExt: found this artifact in dependencyMgmt section-> " + depmgtdep.getArtifactId()
-					+ ":" + depmgtdep.getVersion() + "\n");
-			if (depmgtdep.getArtifactId().equals("boost-javaee7-bom")) {
-				buildLevel = "ee7";
-			} else if (depmgtdep.getArtifactId().equals("boost-javaee8-bom")) {
-				buildLevel = "ee8";
-			} else {
-				getLog().debug("AJM: unknown build bom");
+		List<String> listOfDependencies = new ArrayList<String>();;
+		
+		// first get the bom level
+		List<String> buildLevelStrings = getBuildEnvString(proj);
+
+		getLog().debug("AJM: getting the boost config\n");
+
+		Plugin plugin = proj.getPlugin("io.openliberty.boost:boost-maven-plugin");
+
+		Xpp3Dom config = (Xpp3Dom) plugin.getConfiguration();
+
+		if (config != null) {
+			List<String> boosterStrings = new ArrayList<String>();
+
+			Xpp3Dom[] subelement = config.getChildren(); // .getChild("booster");
+			for (Xpp3Dom xppdom : subelement) {
+				getLog().debug("found booster -> " + xppdom.getValue());
+				boosterStrings.add(xppdom.getValue());
+
 			}
 
+			//listOfDependencies = new ArrayList<String>();
+			getLog().debug("getBoostCfg: first lets see what dependencies we find");
+
+			for (String booster : boosterStrings) {
+				getLog().debug("getBoostCfg: found this, adding as a string -> " + booster);
+				for (String buildEnvStr : buildLevelStrings) {
+					listOfDependencies.add(booster + ":" + buildEnvStr);
+				}
+			}
 		}
-		
-        List<String> listOfDependencies = new ArrayList<String>();
-        getLog().debug("getBoostCfg: first lets see what dependencies we find");
 
-        for (Artifact artifact : project.getArtifacts()) {
-            getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getGroupId() + ":"
-                    + artifact.getArtifactId());
-            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + buildLevel);
-        }
-
-        return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
-    }
+		return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
+	}
 
     /**
      * Generate a server.xml based on the found EE dependencies
@@ -392,5 +399,36 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         return springBootStarters;
     }
+    
+	private List<String> getBuildEnvString(MavenProject proj) {
+		
+		List<String> buildEnvsFound = new ArrayList<String>();	
+		
+		getLog().debug("BoostMojo: Looking for a runtime build env dependency\n");
+
+			for (Dependency dep : proj.getDependencies()) {
+				getLog().debug("BoostMojo: found this artifact in dependency section-> " + dep.getArtifactId()
+						+ ":" + dep.getVersion() + "\n");
+				if (dep.getArtifactId().equals("javaee-api") && dep.getVersion().equals("7.0")) {
+					getLog().debug("BoostMojo: EE7 dependency found");
+					buildEnvsFound.add("ee7");
+				} else if (dep.getArtifactId().equals("microprofile") && dep.getVersion().equals("1.3")) {
+					getLog().debug("BoostMojo: Microprofile 1.3 dependency found");
+					buildEnvsFound.add("mp13");
+				} else if (dep.getArtifactId().equals("microprofile")&& dep.getVersion().equals("1.4")) {
+					getLog().debug("BoostMojo: Microprofile 1.4 dependency found");
+					buildEnvsFound.add("mp14");
+				} else {
+					getLog().debug("BoostMojo: not a build env dependency");
+				}
+			}
+		
+			if  (buildEnvsFound.isEmpty()){
+				// default is ee8
+				getLog().debug("BoostMojo: no build env dependency explicitly listed - defaulting to ee8");
+				buildEnvsFound.add("ee8");
+			}
+		return buildEnvsFound;
+	}
 
 }
