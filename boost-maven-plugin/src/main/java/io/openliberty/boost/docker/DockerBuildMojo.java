@@ -34,7 +34,7 @@
 /*
  ******************************************************************************
  * We now include the copyright for our modification:
- *
+
  * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -127,8 +127,10 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         // actually point to the Liberty Uber JAR. Check if this is the case and if so,
         // use the .spring artifact that we preserved during the Boost packaging
         // process.
-        appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
-                .getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
+        File springBootUberJarLocation = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
+                .getSpringBootUberJARLocation(project, getLog());
+        appArchive = new File(
+                io.openliberty.boost.utils.SpringBootUtil.getBoostedSpringBootUberJarPath(springBootUberJarLocation));
         if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
             getLog().info("Found Spring Boot Uber JAR with .spring extension.");
             return appArchive;
