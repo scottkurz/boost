@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE")
         classpath("io.openliberty.boost:boost-gradle-plugin:$boostVersion")
     }
 }
@@ -19,18 +19,16 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-jar {
-    baseName = 'test-docker15'
-}
-
-bootRepackage {
-    mainClass = 'hello.Application'
+bootJar {
+    baseName = 'test-docker20'
+    mainClassName = 'hello.Application'
 }
 
 boost {
     docker {
-        imageName = 'test-image15'
+        imageName = 'test-image20'
         dockerRepo = 'localhost:5000/'
+        dockerizer = 'jar'
     }
 }
 
