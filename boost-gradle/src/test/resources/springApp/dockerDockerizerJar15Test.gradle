@@ -31,7 +31,7 @@ boost {
     docker {
         imageName = 'test-image15'
         dockerRepo = 'localhost:5000/'
-        classifier = 'jar'
+        dockerizer = 'jar'
     }
 }
 
