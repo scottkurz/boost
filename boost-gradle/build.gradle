@@ -107,6 +107,8 @@ task groovydocJar(type: Jar) {
     from groovydoc
 }
 
+task copyDependency(type: Copy)
+
 artifacts {
     archives groovydocJar, sourcesJar
 }

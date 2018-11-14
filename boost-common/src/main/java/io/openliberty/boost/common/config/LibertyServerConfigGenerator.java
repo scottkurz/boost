@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.utils;
+package io.openliberty.boost.common.config;
 
-import static io.openliberty.boost.common.utils.ConfigConstants.*;
+import static io.openliberty.boost.common.config.ConfigConstants.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,23 +35,21 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.openliberty.boost.common.boosters.BoosterPackConfigurator;
-
 /**
  * Create a Liberty server.xml
  *
  */
 public class LibertyServerConfigGenerator {
 
-    String serverPath;
+    private String serverPath;
     
-    Document doc;
-    Element featureManager;
-    Element serverRoot;
+    private Document doc;
+    private Element featureManager;
+    private Element serverRoot;
 
-    Set<String> featuresAdded;
+    private Set<String> featuresAdded;
     
-    Properties bootstrapProperties;
+    private Properties bootstrapProperties;
 
     public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
         this.serverPath = serverPath;
@@ -73,6 +71,10 @@ public class LibertyServerConfigGenerator {
         // Create featureManager config element
         featureManager = doc.createElement(FEATURE_MANAGER);
         serverRoot.appendChild(featureManager);
+    }
+    
+    public Document getServerDoc() {
+    	return doc;
     }
 
     /**
@@ -200,13 +202,6 @@ public class LibertyServerConfigGenerator {
         }
     }
 
-    public void addConfigForFeatures(List<BoosterPackConfigurator> boosterConfigurators) {
-        for (BoosterPackConfigurator booster : boosterConfigurators) {
-            booster.writeConfigToServerXML(doc);
-        }
-
-    }
-
     public void addBootstrapProperties(Properties properties) throws IOException{
         
         for(String key : properties.stringPropertyNames()) {
@@ -215,15 +210,15 @@ public class LibertyServerConfigGenerator {
         }
     }
     
-    public void addConfigForApp(String artifactId, String version){
+    public void addBoosterConfig(BoosterPackConfigurator configurator) {
+    	configurator.addServerConfig(getServerDoc());
+    }
+    
+    public void addApplication(String appName){
     	Element appCfg = doc.createElement(APPLICATION);
-    	appCfg.setAttribute("context-root", "/");
-        if(version == null) {
-            appCfg.setAttribute("location", artifactId + "." + ConfigConstants.WAR_PKG_TYPE);
-        } else {
-            appCfg.setAttribute("location", artifactId + "-" + version + "." + ConfigConstants.WAR_PKG_TYPE);
-        }
-    	appCfg.setAttribute("type", ConfigConstants.WAR_PKG_TYPE);
+    	appCfg.setAttribute(CONTEXT_ROOT, "/");
+    	appCfg.setAttribute(LOCATION, appName + "." + WAR_PKG_TYPE);
+    	appCfg.setAttribute(TYPE, WAR_PKG_TYPE);
     	serverRoot.appendChild(appCfg);
 
     }

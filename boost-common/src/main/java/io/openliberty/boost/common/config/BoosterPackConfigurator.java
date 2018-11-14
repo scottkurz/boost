@@ -9,28 +9,47 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.common.boosters;
+package io.openliberty.boost.common.config;
+
+import java.io.IOException;
+import java.util.Map;
 
 import org.w3c.dom.Document;
+
 
 /**
  * Interface to describe common function across all technology Booster Pack
  * Config Objects
  *
  */
-public interface BoosterPackConfigurator {
+public abstract class BoosterPackConfigurator {
 		
+	protected String EE_7_VERSION = "0.1-SNAPSHOT";
+	protected String EE_8_VERSION = "0.2-SNAPSHOT";
+	
 	/**
-	 * method to return the string feature name - will be written to the feature manager stanza of server.xml
+	 * Return the Liberty feature name
 	 * @return
 	 */
-	public abstract String getFeatureString();
+	public abstract String getFeature();
 	
 	/**
 	 * method to write out the default config for a particular feature into server.xml
 	 * @param doc
 	 */
-	public abstract void writeConfigToServerXML(Document doc);
+	public abstract void addServerConfig(Document doc);
 	
-	public abstract void setFeatureString(String featureStr);
+	/**
+	 * Set the Liberty feature based on the booster dependency version
+	 * @param version
+	 */
+	public abstract void setFeature(String version);
+
+	/**
+	 * Return the artifactId of the dependency jar to copy to the server
+	 * @return
+	 */
+	public abstract String getDependencyToCopy();
+	
+	
 }
