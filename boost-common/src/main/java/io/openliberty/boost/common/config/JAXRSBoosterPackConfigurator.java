@@ -17,32 +17,32 @@ import static io.openliberty.boost.common.config.ConfigConstants.*;
 import java.util.Map;
 
 public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
-	
-	String libertyFeature = null;
+
+    String libertyFeature = null;
 
     @Override
-    public void setFeature(String version){
-    	// if it is the 1.0 version = EE7 feature level
-    	if (version.equals(EE_7_VERSION)) {
-    		libertyFeature = JAXRS_20;
-    	} else if (version.equals(EE_8_VERSION)){
-    		libertyFeature = JAXRS_21;
-    	}
+    public void setFeature(String version) {
+        // if it is the 1.0 version = EE7 feature level
+        if (version.equals(EE_7_VERSION)) {
+            libertyFeature = JAXRS_20;
+        } else if (version.equals(EE_8_VERSION)) {
+            libertyFeature = JAXRS_21;
+        }
     }
-    
+
     @Override
     public String getFeature() {
-    	return libertyFeature;
+        return libertyFeature;
     }
 
-	@Override
-	public void addServerConfig(Document doc) {
-		// No config to write
-		
-	}
+    @Override
+    public void addServerConfig(Document doc) {
+        // No config to write
 
-	@Override
-	public String getDependencyToCopy() {
-		return null;
-	}
+    }
+
+    @Override
+    public String getDependencyToCopy() {
+        return null;
+    }
 }

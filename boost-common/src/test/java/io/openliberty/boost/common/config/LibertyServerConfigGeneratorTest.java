@@ -45,7 +45,8 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 

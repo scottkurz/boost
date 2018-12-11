@@ -21,24 +21,23 @@ import io.openliberty.boost.common.config.JDBCBoosterPackConfigurator;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 
 public class LibertyBoosterUtil {
-    
+
     public String BOOSTERS_GROUP_ID = "io.openliberty.boosters";
 
     public static String BOOSTER_JAXRS = "jaxrs";
     public static String BOOSTER_JDBC = "jdbc";
-    
+
     protected String libertyServerPath;
     protected List<BoosterPackConfigurator> boosterPackConfigurators;
     protected BoostLoggerI logger;
-    
+
     public LibertyBoosterUtil(String libertyServerPath, Map<String, String> dependencies, BoostLoggerI logger) {
-    	this.libertyServerPath = libertyServerPath;
-    	this.logger = logger;
-    	
-    	this.boosterPackConfigurators = getBoosterPackConfigurators(dependencies);
+        this.libertyServerPath = libertyServerPath;
+        this.logger = logger;
+
+        this.boosterPackConfigurators = getBoosterPackConfigurators(dependencies);
     }
-    
-    
+
     /**
      * take a list of pom boost dependency strings and map to liberty features for
      * config. return a list of feature configuration objects for each found
@@ -48,16 +47,16 @@ public class LibertyBoosterUtil {
      * @return
      */
     private List<BoosterPackConfigurator> getBoosterPackConfigurators(Map<String, String> dependencies) {
-    	
-    	List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
-    	
+
+        List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
+
         for (String dep : dependencies.keySet()) {
             if (dep.equals(BOOSTER_JDBC)) {
                 JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator();
                 jdbcConfig.setFeature(dependencies.get(dep));
                 boosterPackConfigList.add(jdbcConfig);
-                
-            } else if (dep.equals(BOOSTER_JAXRS)) {		
+
+            } else if (dep.equals(BOOSTER_JAXRS)) {
                 JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
                 jaxrsConfig.setFeature(dependencies.get(dep));
                 boosterPackConfigList.add(jaxrsConfig);
@@ -67,40 +66,41 @@ public class LibertyBoosterUtil {
 
         return boosterPackConfigList;
     }
-    
-    public void generateLibertyServerConfig(String warName) throws Exception {
-    	
-    	LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
-    	
-    	// Loop through configuration objects and get features and XML config (if any)
-    	for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
-    		serverConfig.addFeature(configurator.getFeature());
-    		serverConfig.addBoosterConfig(configurator);
-    	}
-    	
-    	// Add war configuration is necessary
-    	if (warName != null) {
-    		serverConfig.addApplication(warName);
-    	} else {
-    		throw new Exception ("Unsupported Maven packaging type - Liberty Boost currently supports WAR packaging type only.");
-    	}
 
-    	serverConfig.writeToServer();
+    public void generateLibertyServerConfig(String warName) throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
+
+        // Loop through configuration objects and get features and XML config (if any)
+        for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
+            serverConfig.addFeature(configurator.getFeature());
+            serverConfig.addBoosterConfig(configurator);
+        }
+
+        // Add war configuration is necessary
+        if (warName != null) {
+            serverConfig.addApplication(warName);
+        } else {
+            throw new Exception(
+                    "Unsupported Maven packaging type - Liberty Boost currently supports WAR packaging type only.");
+        }
+
+        serverConfig.writeToServer();
     }
-    
+
     public List<String> getDependenciesToCopy() {
-    	
-    	List<String> dependenciesToCopy = new ArrayList<String>();
-    	
-    	for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
-    		String dependencyToCopy = configurator.getDependencyToCopy();
-    		
-    		if (dependencyToCopy != null) {
-    			
-    			dependenciesToCopy.add(dependencyToCopy);
-    		}
-    	}
-    	
-    	return dependenciesToCopy;
+
+        List<String> dependenciesToCopy = new ArrayList<String>();
+
+        for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
+            String dependencyToCopy = configurator.getDependencyToCopy();
+
+            if (dependencyToCopy != null) {
+
+                dependenciesToCopy.add(dependencyToCopy);
+            }
+        }
+
+        return dependenciesToCopy;
     }
 }

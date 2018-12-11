@@ -22,9 +22,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
-    
-	/**
-     * The artifactId of the dependency for this booster that needs to be copied to the server
+
+    /**
+     * The artifactId of the dependency for this booster that needs to be copied to
+     * the server
      */
     private final String DEPENDENCY_ARTIFACT = "org.apache.derby:derby:10.14.2.0";
 
@@ -43,8 +44,8 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
      */
     public void addServerConfig(Document doc) {
 
-    	Element serverRoot = doc.getDocumentElement();
-    	
+        Element serverRoot = doc.getDocumentElement();
+
         // Find the root server element
         NodeList list = doc.getChildNodes();
         for (int i = 0; i < list.getLength(); i++) {
@@ -52,48 +53,48 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
                 serverRoot = (Element) list.item(i);
             }
         }
-     
-    	// Add library
-    	Element lib = doc.createElement(LIBRARY);
-    	lib.setAttribute("id", "DerbyLib");
+
+        // Add library
+        Element lib = doc.createElement(LIBRARY);
+        lib.setAttribute("id", "DerbyLib");
         Element fileLoc = doc.createElement(FILESET);
         fileLoc.setAttribute("dir", "resources");
         fileLoc.setAttribute("includes", "derby*.jar");
         lib.appendChild(fileLoc);
         serverRoot.appendChild(lib);
-        
+
         // Add datasource
-        Element dataSource = doc.createElement(DATASOURCE);    	
+        Element dataSource = doc.createElement(DATASOURCE);
         dataSource.setAttribute("id", "DefaultDataSource");
         dataSource.setAttribute(JDBC_DRIVER_REF, "DerbyEmbedded");
-        
+
         Element derbyProps = doc.createElement(PROPERTIES_DERBY_EMBEDDED);
         derbyProps.setAttribute(DATABASE_NAME, "${server.output.dir}/DerbyDB");
         derbyProps.setAttribute("createDatabase", "create");
         dataSource.appendChild(derbyProps);
-        
+
         serverRoot.appendChild(dataSource);
-        
+
         Element jdbcDriver = doc.createElement(JDBC_DRIVER);
         jdbcDriver.setAttribute("id", "DerbyEmbedded");
         jdbcDriver.setAttribute(LIBRARY_REF, "DerbyLib");
         serverRoot.appendChild(jdbcDriver);
     }
 
-	@Override
-	public void setFeature(String version) {
-		
-		if (version.equals(EE_7_VERSION)) {
-    		libertyFeature = JDBC_41;
-    	} else if (version.equals(EE_8_VERSION)){
-    		libertyFeature = JDBC_42;
-    	}
-		
-	}
-	
-	@Override
-	public String getDependencyToCopy() {
-		
-		return DEPENDENCY_ARTIFACT;
-	}
+    @Override
+    public void setFeature(String version) {
+
+        if (version.equals(EE_7_VERSION)) {
+            libertyFeature = JDBC_41;
+        } else if (version.equals(EE_8_VERSION)) {
+            libertyFeature = JDBC_42;
+        }
+
+    }
+
+    @Override
+    public String getDependencyToCopy() {
+
+        return DEPENDENCY_ARTIFACT;
+    }
 }

@@ -22,13 +22,15 @@ public class JdbcServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
      */
     @Resource(name = "jdbc/exampleDS")
     DataSource ds1;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         Statement stmt = null;
         Connection con = null;
 
@@ -37,16 +39,17 @@ public class JdbcServlet extends HttpServlet {
 
             stmt = con.createStatement();
             // create a table
-            stmt.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            stmt.executeUpdate(
+                    "create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
             // insert a test record
             stmt.executeUpdate("insert into cities values ('myHomeCity', 106769, 'myHomeCounty')");
             // select a record
             ResultSet result = stmt.executeQuery("select county from cities where name='myHomeCity'");
             result.next();
             // display the county information for the city.
-            response.getWriter().print("<h1><font color=green>Text retrieved from database is: </font>" +
-                                       "<font color=red>" + result.getString(1) + "</font></h1>");
-            //System.out.println("The county for myHomeCity is " + result.getString(1));
+            response.getWriter().print("<h1><font color=green>Text retrieved from database is: </font>"
+                    + "<font color=red>" + result.getString(1) + "</font></h1>");
+            // System.out.println("The county for myHomeCity is " + result.getString(1));
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
