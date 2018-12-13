@@ -47,6 +47,8 @@ public class BoostPackageTask extends AbstractBoostTask {
     List<BoosterPackConfigurator> boosterFeatures = null
 
     String libertyServerPath = null
+
+    boolean useDefaultHost
     
     BoostPackageTask() {
         configure({
@@ -123,11 +125,13 @@ public class BoostPackageTask extends AbstractBoostTask {
             doFirst {
 
                 libertyServerPath = "${project.buildDir}/wlp/usr/servers/${project.liberty.server.name}"
-                
-                if (isPackageConfigured() && project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
-                    boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
+                if (isPackageConfigured()) {
+                    if(project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
+                        boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
+                    }
+                    useDefaultHost = project.boost.packaging.useDefaultHost
                 }
-                
+
                 project.liberty.server.packageLiberty = boostPackage
 
                 if (isSpringProject()) {
@@ -237,7 +241,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig("${project.buildDir}/resources/main", libertyServerPath,
-                    springBootVersion, springBootDependencies, BoostLogger.getInstance());
+                    springBootVersion, springBootDependencies, BoostLogger.getInstance(), useDefaultHost);
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);

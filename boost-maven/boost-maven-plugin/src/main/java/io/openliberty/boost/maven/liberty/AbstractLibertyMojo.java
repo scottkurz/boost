@@ -55,6 +55,9 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     @Parameter
     protected ArtifactItem runtimeArtifact;
 
+    @Parameter(property = "useDefaultHost", defaultValue = "false", readonly = true)
+    protected boolean useDefaultHost;
+
     protected Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
