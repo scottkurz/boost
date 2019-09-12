@@ -31,6 +31,9 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
     public static final String MYSQL_DEFAULT_PORT_NUMBER = "3306";
     public static final String POSTGRESQL_DEFAULT_PORT_NUMBER = "5432";
 
+    //Assumption in TomEE is that "driverName" = part of URL prefix as in "jdbc:<prefix>:..." for DataSource URL
+    // Maybe a better name than "driverName would be URL prefix portion or something.
+    
     public static String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String DB2_DRIVER_CLASS_NAME = "com.ibm.db2.jcc.DB2Driver";
     public static String MYSQL_DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
@@ -38,13 +41,17 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     public static String DERBY_GROUP_ID = "org.apache.derby";
     public static String DERBY_ARTIFACT_ID = "derby";
+    public static String DERBY_DRIVER_NAME = "derby";
     public static String DB2_GROUP_ID = "com.ibm.db2.jcc";
     public static String DB2_ARTIFACT_ID = "db2jcc";
+    public static String DB2_DRIVER_NAME = "db2";
     public static String MYSQL_GROUP_ID = "mysql";
     public static String MYSQL_ARTIFACT_ID = "mysql-connector-java";
+    public static String MYSQL_DRIVER_NAME = "mysql";
     public static String POSTGRESQL_GROUP_ID = "org.postgresql";
     public static String POSTGRESQL_ARTIFACT_ID = "postgresql";
-
+    public static String POSTGRESQL_DRIVER_NAME = "postgresql";
+    
     public static String DERBY_DEFAULT_VERSION = "10.14.2.0";
     
     public static String DRIVER_CLASS_NAME = "driverClassName";
@@ -67,7 +74,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             String version = projectDependencies.get(DERBY_GROUP_ID + ":" + DERBY_ARTIFACT_ID);
             dependency = DERBY_GROUP_ID + ":" + DERBY_ARTIFACT_ID + ":" + version;
 
-            driverInfo.put(DRIVER_NAME, DERBY_ARTIFACT_ID);
+            driverInfo.put(DRIVER_NAME, DERBY_DRIVER_NAME);
             driverInfo.put(DRIVER_CLASS_NAME, DERBY_DRIVER_CLASS_NAME);
             driverInfo.put(DRIVER_JAR, DERBY_ARTIFACT_ID + "-" + version + ".jar");
 
@@ -75,7 +82,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             String version = projectDependencies.get(DB2_GROUP_ID + ":" + DB2_ARTIFACT_ID);
             dependency = DB2_GROUP_ID + ":" + DB2_ARTIFACT_ID + ":" + version;
 
-            driverInfo.put(DRIVER_NAME, DB2_ARTIFACT_ID);
+            driverInfo.put(DRIVER_NAME, DB2_DRIVER_NAME);
             driverInfo.put(DRIVER_CLASS_NAME, DB2_DRIVER_CLASS_NAME);
             driverInfo.put(DRIVER_JAR, DB2_ARTIFACT_ID + "-" + version + ".jar");
 
@@ -83,7 +90,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             String version = projectDependencies.get(MYSQL_GROUP_ID + ":" + MYSQL_ARTIFACT_ID);
             dependency = MYSQL_GROUP_ID + ":" + MYSQL_ARTIFACT_ID + ":" + version;
 
-            driverInfo.put(DRIVER_NAME, MYSQL_ARTIFACT_ID);
+            driverInfo.put(DRIVER_NAME, MYSQL_DRIVER_NAME);
             driverInfo.put(DRIVER_CLASS_NAME, MYSQL_DRIVER_CLASS_NAME);
             driverInfo.put(DRIVER_JAR, MYSQL_ARTIFACT_ID + "-" + version + ".jar");
 
@@ -91,14 +98,14 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             String version = projectDependencies.get(POSTGRESQL_GROUP_ID + ":" + POSTGRESQL_ARTIFACT_ID);
             dependency = POSTGRESQL_GROUP_ID + ":" + POSTGRESQL_ARTIFACT_ID + ":" + version;
 
-            driverInfo.put(DRIVER_NAME, POSTGRESQL_ARTIFACT_ID);
+            driverInfo.put(DRIVER_NAME, POSTGRESQL_DRIVER_NAME);
             driverInfo.put(DRIVER_CLASS_NAME, POSTGRESQL_DRIVER_CLASS_NAME);
             driverInfo.put(DRIVER_JAR, POSTGRESQL_ARTIFACT_ID + "-" + version + ".jar");
 
         } else {
         	dependency = DERBY_GROUP_ID + ":" + DERBY_ARTIFACT_ID + ":" + DERBY_DEFAULT_VERSION;
 
-        	driverInfo.put(DRIVER_NAME, DERBY_ARTIFACT_ID);
+        	driverInfo.put(DRIVER_NAME, DERBY_DRIVER_NAME);
         	driverInfo.put(DRIVER_CLASS_NAME, DERBY_DRIVER_CLASS_NAME);
         	driverInfo.put(DRIVER_JAR, DERBY_ARTIFACT_ID + "-" + DERBY_DEFAULT_VERSION + ".jar");
         }
@@ -155,3 +162,4 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         return driverInfo;
     }
 }
+
