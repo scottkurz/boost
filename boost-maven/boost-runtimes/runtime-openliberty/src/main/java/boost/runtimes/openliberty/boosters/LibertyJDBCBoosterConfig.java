@@ -47,7 +47,7 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
     @Override
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
         try {
-        	libertyServerConfigGenerator.addDataSource(getProductName(), getDatasourceProperties());
+        	libertyServerConfigGenerator.addDataSource(getDriverInfo(), getDatasourceProperties());
         } catch (Exception e) {
             throw new BoostException("Error when configuring JDBC data source.", e);
         }
