@@ -79,7 +79,7 @@ public class TomeeServerConfigGenerator {
 
     public void addServerConfig(AbstractBoosterConfig boosterConfig) throws Exception {
         if (boosterConfig instanceof JDBCBoosterConfig) {
-            addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
+            addDataSource(((JDBCBoosterConfig)boosterConfig).getDriverInfo(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
         }
     }
 
@@ -215,7 +215,7 @@ public class TomeeServerConfigGenerator {
         // No keystore support yet
     }
 
-    public void addDataSource(String productName, Properties boostDbProperties) throws Exception {
+    public void addDataSource(Map<String, String> driverInfo, Properties boostDbProperties) throws Exception {
         // Read tomee.xml
         File tomeeXml = new File(configPath + "/" + TOMEE_XML);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -231,15 +231,7 @@ public class TomeeServerConfigGenerator {
         tomee.appendChild(resource);
 
         // Add driver class name
-        String driverClassName = "";
-        if (productName.equals(JDBCBoosterConfig.DERBY)) {
-            driverClassName = JDBCBoosterConfig.DERBY_DRIVER_CLASS_NAME;
-        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
-            driverClassName = JDBCBoosterConfig.DB2_DRIVER_CLASS_NAME;
-        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-            driverClassName = JDBCBoosterConfig.MYSQL_DRIVER_CLASS_NAME;
-        }
-        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = " + driverClassName + System.lineSeparator());
+        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = " + driverInfo.get(JDBCBoosterConfig.DRIVER_CLASS_NAME) + System.lineSeparator());
         resource.appendChild(jdbcDriverText);
         
 
@@ -278,10 +270,11 @@ public class TomeeServerConfigGenerator {
         } else {
 
             // Build the url
+        	String driverName = driverInfo.get(JDBCBoosterConfig.DRIVER_NAME);
             StringBuilder jdbcUrl = new StringBuilder();
-            jdbcUrl.append("jdbc:" + productName);
+            jdbcUrl.append("jdbc:" + driverName);
 
-            if (productName.equals(JDBCBoosterConfig.DERBY)) {
+            if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
 
                 // Derby's URL is slightly different than MySQL and DB2
                 String databaseName = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_DATABASE_NAME);

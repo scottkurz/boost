@@ -312,19 +312,18 @@ public class LibertyServerConfigGenerator {
         return property.contains("{aes}") || property.contains("{hash}") || property.contains("{xor}");
     }
     
-    public void addDataSource(String productName, Properties datasourceProperties) throws Exception {
-        String driverJar = null;
+    public void addDataSource(Map<String, String> driverInfo, Properties datasourceProperties) throws Exception {
         String datasourcePropertiesElement = null;
 
-        if (productName.equals(JDBCBoosterConfig.DERBY)) {
-            driverJar = DERBY_JAR;
+        String driverName = driverInfo.get(JDBCBoosterConfig.DRIVER_NAME);
+        if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
-        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
-            driverJar = DB2_JAR;
+        } else if (driverName.equals(JDBCBoosterConfig.DB2_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DB2_JCC;
-        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-            driverJar = MYSQL_JAR;
+        } else if (driverName.equals(JDBCBoosterConfig.MYSQL_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES;
+        } else if (driverName.equals(JDBCBoosterConfig.POSTGRESQL_DRIVER_NAME)) {
+            datasourcePropertiesElement = PROPERTIES_POSTGRESQL;
         }
 
         // Add library
@@ -332,7 +331,7 @@ public class LibertyServerConfigGenerator {
         lib.setAttribute("id", JDBC_LIBRARY_1);
         Element fileLoc = serverXml.createElement(FILESET);
         fileLoc.setAttribute("dir", RESOURCES);
-        fileLoc.setAttribute("includes", driverJar);
+        fileLoc.setAttribute("includes", driverInfo.get(JDBCBoosterConfig.DRIVER_JAR));
         lib.appendChild(fileLoc);
         serverRoot.appendChild(lib);
 
